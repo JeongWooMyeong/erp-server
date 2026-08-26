@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.erp_server.ext.service.dao.oracle.ProductMapper">
+
+    <resultMap id="ProductResultMap" type="org.example.erp_server.ext.dto.Product">
+        <id property="productId" column="PRODUCT_ID"/>
+        <result property="productName" column="PRODUCT_NAME"/>
+        <result property="price" column="PRICE"/>
+        <result property="stock" column="STOCK"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="ProductResultMap">
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        FROM PRODUCT
+    </select>
+
+    <select id="findById" parameterType="long" resultMap="ProductResultMap">
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        FROM PRODUCT
+        WHERE PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="ProductResultMap">
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        FROM PRODUCT
+        WHERE PRODUCT_NAME = #{productname}
+    </select>
+
+    <insert id="insert"
+            parameterType="org.example.erp_server.ext.dto.Product">
+
+        <selectKey
+                keyProperty="productId"
+                resultType="long"
+                order="BEFORE">
+
+            SELECT PRODUCT_SEQ.NEXTVAL
+            FROM DUAL
+
+        </selectKey>
+
+        INSERT INTO PRODUCT (
+        PRODUCT_ID,
+        PRODUCT_NAME,
+        PRICE,
+        STOCK
+        )
+        VALUES (
+        #{productId},
+        #{productName},
+        #{price},
+        #{stock}
+        )
+
+    </insert>
+
+    <update id="update" parameterType="org.example.erp_server.ext.dto.Product">
+        UPDATE PRODUCT
+        SET PRODUCT_NAME = #{productName},
+            PRICE = #{price},
+            STOCK = #{stock}
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+    </delete>
+
+    <select id="findProductsForIndex"
+            resultMap="ProductResultMap">
+
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK
+        FROM PRODUCT
+        WHERE PRODUCT_ID > #{lastId}
+        ORDER BY PRODUCT_ID
+            FETCH NEXT #{size} ROWS ONLY
+
+    </select>
+
+    <select id="findPage"
+            resultMap="ProductResultMap">
+
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK
+        FROM PRODUCT
+        ORDER BY PRODUCT_ID
+        OFFSET #{offset} ROWS
+            FETCH NEXT #{size} ROWS ONLY
+
+    </select>
+
+    <select id="countProducts"
+            resultType="long">
+
+        SELECT COUNT(*)
+        FROM PRODUCT
+
+    </select>
+
+</mapper>

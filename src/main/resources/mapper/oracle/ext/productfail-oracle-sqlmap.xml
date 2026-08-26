@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.erp_server.ext.service.dao.oracle.FailedProductEventMapper">
+
+    <insert id="save">
+
+        INSERT INTO FAILED_PRODUCT_EVENT (
+        ID,
+        EVENT_TYPE,
+        PRODUCT_ID,
+        STATUS,
+        ERROR_MESSAGE,
+        CREATED_AT
+        )
+        VALUES (
+        SEQ_FAILED_PRODUCT_EVENT.NEXTVAL,
+        #{eventType},
+        #{productId},
+        #{status},
+        #{errorMessage},
+        SYSTIMESTAMP
+        )
+
+    </insert>
+
+
+    <select id="findById"
+            resultType="org.example.erp_server.ext.kafka.dto.FailedProductEvent">
+
+        SELECT
+        ID AS id,
+        EVENT_TYPE AS eventType,
+        PRODUCT_ID AS productId,
+        STATUS AS status,
+        ERROR_MESSAGE AS errorMessage,
+        CREATED_AT AS createdAt,
+        RESOLVED_AT AS resolvedAt
+        FROM FAILED_PRODUCT_EVENT
+        WHERE ID = #{id}
+
+    </select>
+
+
+    <update id="resolve">
+
+        UPDATE FAILED_PRODUCT_EVENT
+        SET
+        STATUS = 'RESOLVED',
+        RESOLVED_AT = SYSTIMESTAMP
+        WHERE ID = #{id}
+
+    </update>
+
+
+    <select id="findAll"
+            resultType="org.example.erp_server.ext.kafka.dto.FailedProductEvent">
+
+        SELECT
+        ID AS id,
+        EVENT_TYPE AS eventType,
+        PRODUCT_ID AS productId,
+        STATUS AS status,
+        ERROR_MESSAGE AS errorMessage,
+        CREATED_AT AS createdAt,
+        RESOLVED_AT AS resolvedAt
+        FROM FAILED_PRODUCT_EVENT
+        ORDER BY CREATED_AT DESC
+
+    </select>
+
+</mapper>
