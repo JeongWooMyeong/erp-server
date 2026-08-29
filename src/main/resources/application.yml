@@ -1,4 +1,4 @@
-server-host: 1234
+server-host: 192.168.1.103
 
 server:
   port: 8088
@@ -9,8 +9,8 @@ spring:
 
   datasource:
     url: jdbc:oracle:thin:@//${server-host}:1521/XEPDB1
-    username: 1234
-    password: 1234
+    username: ERP
+    password: erp1234
     driver-class-name: oracle.jdbc.OracleDriver
 
   data:
@@ -46,4 +46,10 @@ spring:
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 mybatis:
-  mapper-locations: classpath:/mapper/**/*.xml
+  mapper-locations: classpath:/mapper/oracle/**/*.xml
+
+logging:
+  level:
+    root: INFO
+    org.example.erp_server: DEBUG
+    org.springframework.web: DEBUG

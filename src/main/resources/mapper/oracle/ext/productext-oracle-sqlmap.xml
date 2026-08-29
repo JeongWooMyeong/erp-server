@@ -47,13 +47,15 @@
         PRODUCT_ID,
         PRODUCT_NAME,
         PRICE,
-        STOCK
+        STOCK,
+        PRODUCT_CODE
         )
         VALUES (
         #{productId},
         #{productName},
         #{price},
-        #{stock}
+        #{stock},
+        #{productCode}
         )
 
     </insert>
@@ -63,11 +65,11 @@
         SET PRODUCT_NAME = #{productName},
             PRICE = #{price},
             STOCK = #{stock}
-        WHERE PRODUCT_ID = #{productId}
+        WHERE PRODUCT_CODE = #{productCode}
     </update>
 
     <delete id="delete" parameterType="long">
-        DELETE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+        DELETE FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
     </delete>
 
     <select id="findProductsForIndex"
