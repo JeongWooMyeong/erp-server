@@ -13,16 +13,18 @@ public class Product implements Serializable {
     private String productName; // 상품명
     private Double price;       // 가격
     private Integer stock;      // 재고
+    private String productCode;
 
     // 기본 생성자
     public Product() {}
 
     // 전체 필드 생성자
-    public Product(Long productId, String productName, Double price, Integer stock) {
+    public Product(Long productId, String productName, Double price, Integer stock, String productCode) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
+        this.productCode = productCode;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class Product implements Serializable {
                 ", productName='" + productName + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +
+                ", productCode=" + productCode +
                 '}';
     }
 }

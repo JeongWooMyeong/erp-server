@@ -48,7 +48,8 @@ public class ProductSearchSyncServiceImpl
                         product.getProductId(),
                         product.getProductName(),
                         product.getPrice(),
-                        product.getStock()
+                        product.getStock(),
+                        product.getProductCode()
                 );
 
         productSearchRepository.save(document);

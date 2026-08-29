@@ -10,21 +10,22 @@
         <result property="productName" column="PRODUCT_NAME"/>
         <result property="price" column="PRICE"/>
         <result property="stock" column="STOCK"/>
+        <result property="productCode" column="PRODUCT_CODE"/>
     </resultMap>
 
     <select id="findAll" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
         FROM PRODUCT
     </select>
 
     <select id="findById" parameterType="long" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
         FROM PRODUCT
         WHERE PRODUCT_ID = #{productId}
     </select>
 
     <select id="findByName" parameterType="String" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK
+        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
         FROM PRODUCT
         WHERE PRODUCT_NAME = #{productname}
     </select>
@@ -75,7 +76,8 @@
         SELECT PRODUCT_ID,
                PRODUCT_NAME,
                PRICE,
-               STOCK
+               STOCK,
+               PRODUCT_CODE
         FROM PRODUCT
         WHERE PRODUCT_ID > #{lastId}
         ORDER BY PRODUCT_ID
@@ -89,7 +91,8 @@
         SELECT PRODUCT_ID,
                PRODUCT_NAME,
                PRICE,
-               STOCK
+               STOCK,
+               PRODUCT_CODE
         FROM PRODUCT
         ORDER BY PRODUCT_ID
         OFFSET #{offset} ROWS

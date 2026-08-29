@@ -26,6 +26,9 @@ public class ProductDocument {
     )
     private String productName;
 
+    @Field(type = FieldType.Keyword)
+    private String productCode;
+
     @Field(type = FieldType.Double)
     private Double price;
 
@@ -38,10 +41,12 @@ public class ProductDocument {
     public ProductDocument(Long productId,
                            String productName,
                            Double price,
-                           Integer stock) {
+                           Integer stock,
+                           String productCode) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
+        this.productCode = productCode;
     }
 }

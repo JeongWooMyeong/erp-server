@@ -9,13 +9,21 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductSearchResponse {
 
+    // 현재 페이지 검색 결과
     private List<ProductDocument> content;
 
-    // 다음 검색에 사용할 마지막 productId
-    private Long nextCursor;
+    // 현재 페이지 번호
+    private int page;
+
+    // 페이지 크기
+    private int size;
+
+    // 전체 검색 결과 수
+    private long totalCount;
+
+    // 전체 페이지 수
+    private long totalPages;
 
     // 다음 페이지 존재 여부
     private boolean hasNext;
-
-    private long totalPages;
 }
