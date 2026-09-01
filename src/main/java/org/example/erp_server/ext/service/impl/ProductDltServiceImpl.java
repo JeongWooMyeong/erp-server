@@ -43,6 +43,10 @@ public class ProductDltServiceImpl
                 event.getProductId()
         );
 
+        failedEvent.setVersion(
+                event.getVersion()
+        );
+
         failedEvent.setStatus("FAILED");
         failedEvent.setErrorMessage(
                 "Kafka DLT 이동"
@@ -63,6 +67,12 @@ public class ProductDltServiceImpl
         FailedProductEvent event =
                 failedProductEventMapper.findById(id);
 
+        ProductEvent retryEvent = new ProductEvent(
+                event.getEventType(),
+                event.getProductId(),
+                event.getVersion()
+        );
+
         if (event == null) {
             throw new RuntimeException(
                     "재처리할 이벤트가 없습니다. id=" + id
@@ -80,13 +90,13 @@ public class ProductDltServiceImpl
         if ("DELETE".equals(event.getEventType())) {
 
             productSearchSyncService.delete(
-                    event.getProductId()
+                    retryEvent
             );
 
         } else {
 
             productSearchSyncService.sync(
-                    event.getProductId()
+                    retryEvent
             );
         }
 

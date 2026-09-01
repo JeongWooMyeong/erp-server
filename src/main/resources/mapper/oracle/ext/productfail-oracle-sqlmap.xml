@@ -13,7 +13,8 @@
         PRODUCT_ID,
         STATUS,
         ERROR_MESSAGE,
-        CREATED_AT
+        CREATED_AT,
+        VERSION
         )
         VALUES (
         SEQ_FAILED_PRODUCT_EVENT.NEXTVAL,
@@ -21,7 +22,8 @@
         #{productId},
         #{status},
         #{errorMessage},
-        SYSTIMESTAMP
+        SYSTIMESTAMP,
+        #{version}
         )
 
     </insert>
@@ -37,7 +39,8 @@
         STATUS AS status,
         ERROR_MESSAGE AS errorMessage,
         CREATED_AT AS createdAt,
-        RESOLVED_AT AS resolvedAt
+        RESOLVED_AT AS resolvedAt,
+        VERSION AS version
         FROM FAILED_PRODUCT_EVENT
         WHERE ID = #{id}
 
@@ -65,7 +68,8 @@
         STATUS AS status,
         ERROR_MESSAGE AS errorMessage,
         CREATED_AT AS createdAt,
-        RESOLVED_AT AS resolvedAt
+        RESOLVED_AT AS resolvedAt,
+        VERSION AS version
         FROM FAILED_PRODUCT_EVENT
         ORDER BY CREATED_AT DESC
 

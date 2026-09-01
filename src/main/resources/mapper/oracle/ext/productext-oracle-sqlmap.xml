@@ -5,31 +5,66 @@
 
 <mapper namespace="org.example.erp_server.ext.service.dao.oracle.ProductMapper">
 
-    <resultMap id="ProductResultMap" type="org.example.erp_server.ext.dto.Product">
+    <resultMap id="ProductResultMap"
+               type="org.example.erp_server.ext.dto.Product">
+
         <id property="productId" column="PRODUCT_ID"/>
         <result property="productName" column="PRODUCT_NAME"/>
         <result property="price" column="PRICE"/>
         <result property="stock" column="STOCK"/>
         <result property="productCode" column="PRODUCT_CODE"/>
+        <result property="version" column="VERSION"/>
+
     </resultMap>
 
+
+    <!-- 전체 조회 -->
     <select id="findAll" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK,
+               PRODUCT_CODE,
+               VERSION
         FROM PRODUCT
     </select>
 
-    <select id="findById" parameterType="long" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
+
+    <!-- ID 조회 -->
+    <select id="findById"
+            parameterType="long"
+            resultMap="ProductResultMap">
+
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK,
+               PRODUCT_CODE,
+               VERSION
         FROM PRODUCT
         WHERE PRODUCT_ID = #{productId}
+
     </select>
 
-    <select id="findByName" parameterType="String" resultMap="ProductResultMap">
-        SELECT PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, PRODUCT_CODE
+
+    <!-- 이름 조회 -->
+    <select id="findByName"
+            parameterType="String"
+            resultMap="ProductResultMap">
+
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK,
+               PRODUCT_CODE,
+               VERSION
         FROM PRODUCT
         WHERE PRODUCT_NAME = #{productname}
+
     </select>
 
+
+    <!-- 상품 등록 -->
     <insert id="insert"
             parameterType="org.example.erp_server.ext.dto.Product">
 
@@ -48,30 +83,47 @@
         PRODUCT_NAME,
         PRICE,
         STOCK,
-        PRODUCT_CODE
+        PRODUCT_CODE,
+        VERSION
         )
         VALUES (
         #{productId},
         #{productName},
         #{price},
         #{stock},
-        #{productCode}
+        #{productCode},
+        0
         )
 
     </insert>
 
-    <update id="update" parameterType="org.example.erp_server.ext.dto.Product">
+
+    <!-- 상품 수정 -->
+    <update id="update"
+            parameterType="org.example.erp_server.ext.dto.Product">
+
         UPDATE PRODUCT
         SET PRODUCT_NAME = #{productName},
             PRICE = #{price},
-            STOCK = #{stock}
-        WHERE PRODUCT_CODE = #{productCode}
+            STOCK = #{stock},
+            VERSION = VERSION + 1
+        WHERE PRODUCT_ID = #{productId}
+        AND VERSION = #{version}
+
     </update>
 
-    <delete id="delete" parameterType="long">
-        DELETE FROM PRODUCT WHERE PRODUCT_CODE = #{productCode}
+
+    <!-- 상품 삭제 -->
+    <delete id="delete"
+            parameterType="long">
+
+        DELETE FROM PRODUCT
+        WHERE PRODUCT_ID = #{productId}
+
     </delete>
 
+
+    <!-- Elasticsearch 초기 적재 -->
     <select id="findProductsForIndex"
             resultMap="ProductResultMap">
 
@@ -79,7 +131,8 @@
                PRODUCT_NAME,
                PRICE,
                STOCK,
-               PRODUCT_CODE
+               PRODUCT_CODE,
+               VERSION
         FROM PRODUCT
         WHERE PRODUCT_ID > #{lastId}
         ORDER BY PRODUCT_ID
@@ -87,6 +140,8 @@
 
     </select>
 
+
+    <!-- 상품 페이지 조회 -->
     <select id="findPage"
             resultMap="ProductResultMap">
 
@@ -94,7 +149,8 @@
                PRODUCT_NAME,
                PRICE,
                STOCK,
-               PRODUCT_CODE
+               PRODUCT_CODE,
+               VERSION
         FROM PRODUCT
         ORDER BY PRODUCT_ID
         OFFSET #{offset} ROWS
@@ -102,6 +158,8 @@
 
     </select>
 
+
+    <!-- 전체 상품 개수 -->
     <select id="countProducts"
             resultType="long">
 

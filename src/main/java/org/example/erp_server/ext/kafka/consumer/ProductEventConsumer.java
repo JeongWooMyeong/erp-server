@@ -32,18 +32,25 @@ public class ProductEventConsumer {
             groupId = "product-search"
     )
     public void consume(ProductEvent event) {
+        // version 검증
+        if (event.getVersion() == null) {
+            throw new IllegalArgumentException(
+                    "상품 이벤트 version이 없습니다. productId="
+                            + event.getProductId()
+            );
+        }
 
         if ("CREATE".equals(event.getEventType())
                 || "UPDATE".equals(event.getEventType())) {
 
             productSearchSyncService.sync(
-                    event.getProductId()
+                    event
             );
 
         } else if ("DELETE".equals(event.getEventType())) {
 
             productSearchSyncService.delete(
-                    event.getProductId()
+                    event
             );
         }
     }

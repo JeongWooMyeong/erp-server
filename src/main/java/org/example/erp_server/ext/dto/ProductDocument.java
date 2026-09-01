@@ -35,6 +35,9 @@ public class ProductDocument {
     @Field(type = FieldType.Integer)
     private Integer stock;
 
+    @Field(type = FieldType.Long)
+    private Long version;
+
     public ProductDocument() {
     }
 
@@ -42,11 +45,13 @@ public class ProductDocument {
                            String productName,
                            Double price,
                            Integer stock,
-                           String productCode) {
+                           String productCode,
+                           Long version) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.productCode = productCode;
+        this.version = version;
     }
 }

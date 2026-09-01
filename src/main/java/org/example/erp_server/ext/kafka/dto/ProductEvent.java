@@ -4,16 +4,19 @@ public class ProductEvent {
 
     private String eventType;
     private Long productId;
+    private Long version;
 
     public ProductEvent() {
     }
 
     public ProductEvent(
             String eventType,
-            Long productId
+            Long productId,
+            Long version
     ) {
         this.eventType = eventType;
         this.productId = productId;
+        this.version = version;
     }
 
     public String getEventType() {
@@ -30,5 +33,13 @@ public class ProductEvent {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

@@ -12,7 +12,7 @@ public interface ProductMapper {
     Product findById(Long productId);
     Product findByName(@Param("productname") String name);
     void insert(Product product);
-    void update(Product product);
+    int update(Product product);
     void delete(Long productId);
     List<Product> findProductsForIndex(
             @Param("lastId") Long lastId,

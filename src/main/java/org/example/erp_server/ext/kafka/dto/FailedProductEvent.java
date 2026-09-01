@@ -21,4 +21,6 @@ public class FailedProductEvent {
     private LocalDateTime createdAt;
 
     private LocalDateTime resolvedAt;
+
+    private Long version;
 }

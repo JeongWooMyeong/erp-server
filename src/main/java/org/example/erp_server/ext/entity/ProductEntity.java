@@ -35,5 +35,8 @@ public class ProductEntity {
     @Column(name = "PRODUCT_CODE", length = 20)
     private String productCode;
 
+    @Column(name = "VERSION", nullable = false)
+    private Long version;
+
     // getter, setter
 }

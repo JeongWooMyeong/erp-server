@@ -188,7 +188,8 @@ public class ProductSearchServiceImpl implements ProductSearchService {
                                             product.getProductName(),
                                             product.getPrice(),
                                             product.getStock(),
-                                            product.getProductCode()
+                                            product.getProductCode(),
+                                            product.getVersion()
                                     )
                             )
                             .toList();

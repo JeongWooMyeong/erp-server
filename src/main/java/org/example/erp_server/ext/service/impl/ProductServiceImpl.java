@@ -97,7 +97,8 @@ public class ProductServiceImpl implements ProductService {
         ProductEvent event =
                 new ProductEvent(
                         "CREATE",
-                        product.getProductId()
+                        product.getProductId(),
+                        product.getVersion()
                 );
 
         productEventProducer.send(event);
@@ -121,12 +122,22 @@ public class ProductServiceImpl implements ProductService {
     })
     public void updateProduct(Product product) {
 
-        productMapper.update(product);
+        int result = productMapper.update(product);
 
-        ProductEvent event = new ProductEvent(
-                "UPDATE",
-                product.getProductId()
-        );
+        if (result == 0) {
+            throw new RuntimeException("상품 수정 충돌");
+        }
+
+        // DB에서 증가된 VERSION 다시 조회
+        Product updatedProduct =
+                productMapper.findById(product.getProductId());
+
+        ProductEvent event =
+                new ProductEvent(
+                        "UPDATE",
+                        updatedProduct.getProductId(),
+                        updatedProduct.getVersion()
+                );
 
         productEventProducer.send(event);
     }
@@ -140,12 +151,28 @@ public class ProductServiceImpl implements ProductService {
     })
     public void removeProduct(Long productId) {
 
+        // 삭제 전에 상품 조회
+        Product product =
+                productMapper.findById(productId);
+
+        if (product == null) {
+            throw new RuntimeException(
+                    "상품을 찾을 수 없습니다. productId=" + productId
+            );
+        }
+
+        Long version = product.getVersion();
+
+        // Oracle 삭제
         productMapper.delete(productId);
 
-        ProductEvent event = new ProductEvent(
-                "DELETE",
-                productId
-        );
+        // Kafka 이벤트
+        ProductEvent event =
+                new ProductEvent(
+                        "DELETE",
+                        productId,
+                        version
+                );
 
         productEventProducer.send(event);
     }
