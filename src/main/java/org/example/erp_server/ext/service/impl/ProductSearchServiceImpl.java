@@ -10,9 +10,11 @@ import org.example.erp_server.ext.dto.Product;
 import org.example.erp_server.ext.dto.ProductDocument;
 import org.example.erp_server.ext.dto.ProductSearchCondition;
 import org.example.erp_server.ext.dto.ProductSearchResponse;
+import org.example.erp_server.ext.entity.ProductEntity;
 import org.example.erp_server.ext.query.ProductSearchQueryBuilder;
 import org.example.erp_server.ext.service.ProductSearchService;
 import org.example.erp_server.ext.service.dao.oracle.ProductMapper;
+import org.example.erp_server.ext.service.repository.ProductRepository;
 import org.example.erp_server.ext.service.repository.ProductSearchRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -28,17 +30,20 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     private final ProductSearchRepository repository;
     private final ElasticsearchClient elasticsearchClient;
     private final ProductSearchQueryBuilder queryBuilder;
+    private final ProductRepository productRepository;
 
     public ProductSearchServiceImpl(
             ProductMapper productMapper,
             ProductSearchRepository repository,
             ElasticsearchClient elasticsearchClient,
-            ProductSearchQueryBuilder queryBuilder
+            ProductSearchQueryBuilder queryBuilder,
+            ProductRepository productRepository
     ) {
         this.productMapper = productMapper;
         this.repository = repository;
         this.elasticsearchClient = elasticsearchClient;
         this.queryBuilder = queryBuilder;
+        this.productRepository = productRepository;
     }
 
 
@@ -157,8 +162,13 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         while (true) {
 
             // Oracle에서 10,000건씩 조회
-            List<Product> products =
-                    productMapper.findProductsForIndex(
+//            List<Product> products =
+//                    productMapper.findProductsForIndex(
+//                            lastId,
+//                            batchSize
+//                    );
+            List<ProductEntity> products =
+                    productRepository.findProductsForIndex(
                             lastId,
                             batchSize
                     );
