@@ -38,5 +38,8 @@ public class ProductEntity {
     @Column(name = "VERSION", nullable = false)
     private Long version;
 
+    @Column(name = "DELETED", nullable = false, length = 1)
+    private String deleted;
+
     // getter, setter
 }

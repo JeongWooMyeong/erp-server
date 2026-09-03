@@ -13,7 +13,7 @@ public interface ProductMapper {
     Product findByName(@Param("productname") String name);
     void insert(Product product);
     int update(Product product);
-    void delete(Long productId);
+    int delete(Product product);
     List<Product> findProductsForIndex(
             @Param("lastId") Long lastId,
             @Param("size") int size
@@ -27,4 +27,5 @@ public interface ProductMapper {
 
     // 전체 상품 개수
     long countProducts();
+    Product findByIdIncludingDeleted(Long productId);
 }

@@ -98,7 +98,12 @@ public class ProductServiceImpl implements ProductService {
                 new ProductEvent(
                         "CREATE",
                         product.getProductId(),
-                        product.getVersion()
+                        product.getVersion(),
+                        "N",
+                        product.getProductName(),
+                        product.getPrice(),
+                        product.getStock(),
+                        product.getProductCode()
                 );
 
         productEventProducer.send(event);
@@ -128,20 +133,25 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("상품 수정 충돌");
         }
 
-        // DB에서 증가된 VERSION 다시 조회
-        Product updatedProduct =
-                productMapper.findById(product.getProductId());
+        // DB UPDATE에서 VERSION + 1 되었으므로
+        Long newVersion = product.getVersion() + 1;
 
         ProductEvent event =
                 new ProductEvent(
                         "UPDATE",
-                        updatedProduct.getProductId(),
-                        updatedProduct.getVersion()
+                        product.getProductId(),
+                        newVersion,
+                        "N",
+                        product.getProductName(),
+                        product.getPrice(),
+                        product.getStock(),
+                        product.getProductCode()
                 );
 
         productEventProducer.send(event);
     }
 
+    // 삭제
     // 삭제
     @Override
     @Caching(evict = {
@@ -151,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
     })
     public void removeProduct(Long productId) {
 
-        // 삭제 전에 상품 조회
+        // 1. 삭제 전에 상품 조회
         Product product =
                 productMapper.findById(productId);
 
@@ -161,17 +171,37 @@ public class ProductServiceImpl implements ProductService {
             );
         }
 
+        // 2. 조회 당시 VERSION
         Long version = product.getVersion();
 
-        // Oracle 삭제
-        productMapper.delete(productId);
+        // 3. 삭제 대상 객체 생성
+        Product deleteProduct = new Product();
+        deleteProduct.setProductId(productId);
+        deleteProduct.setVersion(version);
 
-        // Kafka 이벤트
+        // 4. Soft Delete + VERSION 증가
+        int result = productMapper.delete(deleteProduct);
+
+        // 다른 요청이 먼저 수정/삭제했다면 실패
+        if (result == 0) {
+            throw new RuntimeException("상품 삭제 충돌");
+        }
+
+        // 5. 삭제 후 실제 DB 데이터 조회
+        Product deletedProduct =
+                productMapper.findByIdIncludingDeleted(productId);
+
+        // 6. Kafka 이벤트
         ProductEvent event =
                 new ProductEvent(
                         "DELETE",
-                        productId,
-                        version
+                        deletedProduct.getProductId(),
+                        deletedProduct.getVersion(),
+                        "Y",
+                        null,
+                        null,
+                        null,
+                        null
                 );
 
         productEventProducer.send(event);

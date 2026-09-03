@@ -15,18 +15,20 @@ public class Product implements Serializable {
     private Integer stock;      // 재고
     private String productCode;
     private Long version;
+    private String deleted;
 
     // 기본 생성자
     public Product() {}
 
     // 전체 필드 생성자
-    public Product(Long productId, String productName, Double price, Integer stock, String productCode, Long version) {
+    public Product(Long productId, String productName, Double price, Integer stock, String productCode, Long version, String deleted) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.productCode = productCode;
         this.version = version;
+        this.deleted = deleted;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class Product implements Serializable {
                 ", stock=" + stock +
                 ", productCode=" + productCode +
                 ", version=" + version +
+                ", deleted=" + deleted +
                 '}';
     }
 }

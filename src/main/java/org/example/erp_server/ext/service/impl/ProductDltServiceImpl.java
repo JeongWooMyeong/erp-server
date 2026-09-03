@@ -8,8 +8,6 @@ import org.example.erp_server.ext.service.dao.oracle.FailedProductEventMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ProductDltServiceImpl
@@ -22,36 +20,31 @@ public class ProductDltServiceImpl
             FailedProductEventMapper failedProductEventMapper,
             ProductSearchSyncService productSearchSyncService
     ) {
-        this.failedProductEventMapper =
-                failedProductEventMapper;
-
-        this.productSearchSyncService =
-                productSearchSyncService;
+        this.failedProductEventMapper = failedProductEventMapper;
+        this.productSearchSyncService = productSearchSyncService;
     }
 
+    /**
+     * Kafka DLT 이벤트 DB 저장
+     */
     @Override
     public void saveDltEvent(ProductEvent event) {
 
         FailedProductEvent failedEvent =
                 new FailedProductEvent();
 
-        failedEvent.setEventType(
-                event.getEventType()
-        );
+        failedEvent.setEventType(event.getEventType());
+        failedEvent.setProductId(event.getProductId());
+        failedEvent.setVersion(event.getVersion());
+        failedEvent.setDeleted(event.getDeleted());
 
-        failedEvent.setProductId(
-                event.getProductId()
-        );
-
-        failedEvent.setVersion(
-                event.getVersion()
-        );
+        failedEvent.setProductName(event.getProductName());
+        failedEvent.setPrice(event.getPrice());
+        failedEvent.setStock(event.getStock());
+        failedEvent.setProductCode(event.getProductCode());
 
         failedEvent.setStatus("FAILED");
-        failedEvent.setErrorMessage(
-                "Kafka DLT 이동"
-        );
-
+        failedEvent.setErrorMessage("Kafka DLT 이동");
 
         failedProductEventMapper.save(failedEvent);
 
@@ -61,18 +54,16 @@ public class ProductDltServiceImpl
         );
     }
 
+    /**
+     * DLT 이벤트 재처리
+     */
     @Override
     public void retry(Long id) {
 
         FailedProductEvent event =
                 failedProductEventMapper.findById(id);
 
-        ProductEvent retryEvent = new ProductEvent(
-                event.getEventType(),
-                event.getProductId(),
-                event.getVersion()
-        );
-
+        // 반드시 조회 결과부터 확인
         if (event == null) {
             throw new RuntimeException(
                     "재처리할 이벤트가 없습니다. id=" + id
@@ -85,22 +76,40 @@ public class ProductDltServiceImpl
             );
         }
 
-        System.out.println("PRODUCTID" + event.getProductId());
+        // DLT에 저장했던 원본 이벤트 복원
+        ProductEvent retryEvent =
+                new ProductEvent(
+                        event.getEventType(),
+                        event.getProductId(),
+                        event.getVersion(),
+                        event.getDeleted(),
+                        event.getProductName(),
+                        event.getPrice(),
+                        event.getStock(),
+                        event.getProductCode()
+                );
 
-        if ("DELETE".equals(event.getEventType())) {
+        System.out.println(
+                "DLT 재처리 시작 = id: "
+                        + id
+                        + ", productId: "
+                        + event.getProductId()
+                        + ", version: "
+                        + event.getVersion()
+        );
 
-            productSearchSyncService.delete(
-                    retryEvent
-            );
+        /*
+         * CREATE / UPDATE / DELETE 모두 sync()로 처리
+         *
+         * DELETE도 deleted = Y인 Document를 ES에 저장한다.
+         * 따라서 saveIfNewer()에서 VERSION 비교가 가능하다.
+         */
+        productSearchSyncService.sync(retryEvent);
 
-        } else {
-
-            productSearchSyncService.sync(
-                    retryEvent
-            );
-        }
-
-        // ES 처리가 성공했을 때만 실행
+        /*
+         * ES 처리가 정상적으로 끝난 경우에만
+         * DLT 이벤트를 RESOLVED 처리
+         */
         failedProductEventMapper.resolve(id);
 
         System.out.println(

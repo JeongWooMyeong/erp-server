@@ -38,6 +38,9 @@ public class ProductDocument {
     @Field(type = FieldType.Long)
     private Long version;
 
+    @Field(type = FieldType.Keyword)
+    private String deleted;
+
     public ProductDocument() {
     }
 
@@ -46,12 +49,14 @@ public class ProductDocument {
                            Double price,
                            Integer stock,
                            String productCode,
-                           Long version) {
+                           Long version,
+                           String deleted) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.stock = stock;
         this.productCode = productCode;
         this.version = version;
+        this.deleted = deleted;
     }
 }

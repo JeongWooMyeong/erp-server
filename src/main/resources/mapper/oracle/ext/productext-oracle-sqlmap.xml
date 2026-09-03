@@ -14,6 +14,7 @@
         <result property="stock" column="STOCK"/>
         <result property="productCode" column="PRODUCT_CODE"/>
         <result property="version" column="VERSION"/>
+        <result property="deleted" column="DELETED"/>
 
     </resultMap>
 
@@ -25,7 +26,8 @@
                PRICE,
                STOCK,
                PRODUCT_CODE,
-               VERSION
+               VERSION,
+               DELETED
         FROM PRODUCT
     </select>
 
@@ -40,7 +42,25 @@
                PRICE,
                STOCK,
                PRODUCT_CODE,
-               VERSION
+               VERSION,
+               DELETED
+        FROM PRODUCT
+        WHERE PRODUCT_ID = #{productId}
+          AND DELETED = 'N'
+
+    </select>
+
+    <select id="findByIdIncludingDeleted"
+            parameterType="long"
+            resultMap="ProductResultMap">
+
+        SELECT PRODUCT_ID,
+               PRODUCT_NAME,
+               PRICE,
+               STOCK,
+               PRODUCT_CODE,
+               VERSION,
+               DELETED
         FROM PRODUCT
         WHERE PRODUCT_ID = #{productId}
 
@@ -57,9 +77,11 @@
                PRICE,
                STOCK,
                PRODUCT_CODE,
-               VERSION
+               VERSION,
+               DELETED
         FROM PRODUCT
         WHERE PRODUCT_NAME = #{productname}
+        and DELETED = 'N'
 
     </select>
 
@@ -84,7 +106,8 @@
         PRICE,
         STOCK,
         PRODUCT_CODE,
-        VERSION
+        VERSION,
+        DELETED
         )
         VALUES (
         #{productId},
@@ -92,7 +115,8 @@
         #{price},
         #{stock},
         #{productCode},
-        0
+        0,
+        'N'
         )
 
     </insert>
@@ -109,18 +133,23 @@
             VERSION = VERSION + 1
         WHERE PRODUCT_ID = #{productId}
         AND VERSION = #{version}
+        AND DELETED = 'N'
 
     </update>
 
 
     <!-- 상품 삭제 -->
-    <delete id="delete"
-            parameterType="long">
+    <update id="delete"
+            parameterType="org.example.erp_server.ext.dto.Product">
 
-        DELETE FROM PRODUCT
+        UPDATE PRODUCT
+        SET DELETED = 'Y',
+            VERSION = VERSION + 1
         WHERE PRODUCT_ID = #{productId}
+          AND VERSION = #{version}
+          AND DELETED = 'N'
 
-    </delete>
+    </update>
 
 
     <!-- Elasticsearch 초기 적재 -->
@@ -132,9 +161,11 @@
                PRICE,
                STOCK,
                PRODUCT_CODE,
-               VERSION
+               VERSION,
+               DELETED
         FROM PRODUCT
         WHERE PRODUCT_ID > #{lastId}
+        AND DELETED = 'N'
         ORDER BY PRODUCT_ID
             FETCH NEXT #{size} ROWS ONLY
 
@@ -150,8 +181,10 @@
                PRICE,
                STOCK,
                PRODUCT_CODE,
-               VERSION
+               VERSION,
+               DELETED
         FROM PRODUCT
+        WHERE DELETED = 'N'
         ORDER BY PRODUCT_ID
         OFFSET #{offset} ROWS
             FETCH NEXT #{size} ROWS ONLY
@@ -165,6 +198,7 @@
 
         SELECT COUNT(*)
         FROM PRODUCT
+        WHERE DELETED = 'N'
 
     </select>
 

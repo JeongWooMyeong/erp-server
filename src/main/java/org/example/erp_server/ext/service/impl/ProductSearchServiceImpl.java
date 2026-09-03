@@ -59,7 +59,10 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             int size
     ) throws IOException {
 
-        // 페이지 번호 및 페이지 크기 검증
+        // ==========================================
+        // 1. 페이지 번호 및 페이지 크기 검증
+        // ==========================================
+
         final int safePage =
                 Math.max(page, 0);
 
@@ -67,59 +70,197 @@ public class ProductSearchServiceImpl implements ProductSearchService {
                 size > 0 ? size : 50;
 
 
-        // Elasticsearch Query 생성
+        // ==========================================
+        // 2. Elasticsearch Query 생성
+        // ==========================================
+
         Query query =
                 queryBuilder.build(condition);
 
 
-        // Offset 계산
+        // ==========================================
+        // 3. Offset 계산
+        // ==========================================
+
         int from =
                 safePage * safeSize;
 
 
-        // Elasticsearch 검색
-        SearchResponse<ProductDocument> response =
-                elasticsearchClient.search(s -> {
+        // ==========================================
+        // 4. Elasticsearch Response
+        // ==========================================
 
-                    s.index("products")
-                            .from(from)
-                            .size(safeSize)
-
-                            // 전체 검색 결과 수 계산
-                            .trackTotalHits(
-                                    t -> t.enabled(true)
-                            )
-
-                            // 검색 조건
-                            .query(query)
-
-                            // 상품 ID 기준 정렬
-                            .sort(sort -> sort
-                                    .field(field -> field
-                                            .field("productId")
-                                            .order(SortOrder.Asc)
-                                    )
-                            );
-
-                    return s;
-
-                }, ProductDocument.class);
+        SearchResponse<ProductDocument> response;
 
 
-        // 전체 검색 결과 수
+        try {
+
+            System.out.println();
+            System.out.println("========================================");
+            System.out.println("        ES SEARCH START");
+            System.out.println("========================================");
+
+            System.out.println("page      = " + page);
+            System.out.println("safePage  = " + safePage);
+            System.out.println("size      = " + size);
+            System.out.println("safeSize  = " + safeSize);
+            System.out.println("from      = " + from);
+
+            System.out.println("field     = "
+                    + condition.getField());
+
+            System.out.println("keyword   = "
+                    + condition.getKeyword());
+
+            System.out.println("query     = "
+                    + query);
+
+            System.out.println("========================================");
+
+
+            // ==========================================
+            // Elasticsearch 검색
+            // ==========================================
+
+            response =
+                    elasticsearchClient.search(s -> {
+
+                        s.index("products")
+
+                                .from(from)
+
+                                .size(safeSize)
+
+
+                                // 전체 검색 결과 수 계산
+                                .trackTotalHits(
+                                        t -> t.enabled(true)
+                                )
+
+
+                                // 검색 조건
+                                .query(query)
+
+
+                                // 상품 ID 기준 정렬
+                                .sort(sort -> sort
+                                        .field(field -> field
+                                                .field("productId")
+                                                .order(SortOrder.Asc)
+                                        )
+                                );
+
+
+                        return s;
+
+                    }, ProductDocument.class);
+
+
+            System.out.println();
+            System.out.println("========== ES SEARCH SUCCESS ==========");
+
+            System.out.println("returned hits = "
+                    + response.hits().hits().size());
+
+            if (response.hits().total() != null) {
+
+                System.out.println("total hits = "
+                        + response.hits().total().value());
+            }
+
+            System.out.println("========================================");
+            System.out.println();
+
+
+        } catch (Exception e) {
+
+            // ==========================================
+            // Elasticsearch 에러 상세 출력
+            // ==========================================
+
+            System.out.println();
+            System.out.println();
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("         ELASTICSEARCH ERROR");
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+
+            System.out.println();
+            System.out.println("[REQUEST INFO]");
+
+            System.out.println("page      = " + page);
+            System.out.println("safePage  = " + safePage);
+            System.out.println("size      = " + size);
+            System.out.println("safeSize  = " + safeSize);
+            System.out.println("from      = " + from);
+
+
+            System.out.println();
+            System.out.println("[SEARCH CONDITION]");
+
+            System.out.println("field     = "
+                    + condition.getField());
+
+            System.out.println("keyword   = "
+                    + condition.getKeyword());
+
+
+            System.out.println();
+            System.out.println("[ELASTICSEARCH QUERY]");
+
+            System.out.println(query);
+
+
+            System.out.println();
+            System.out.println("[EXCEPTION CLASS]");
+
+            System.out.println(
+                    e.getClass().getName()
+            );
+
+
+            System.out.println();
+            System.out.println("[EXCEPTION MESSAGE]");
+
+            System.out.println(
+                    e.getMessage()
+            );
+
+
+            System.out.println();
+            System.out.println("[STACK TRACE]");
+
+            e.printStackTrace();
+
+
+            // 원래 예외 다시 전달
+            throw e;
+        }
+
+
+        // ==========================================
+        // 5. 전체 검색 결과 수
+        // ==========================================
+
         long totalCount =
                 response.hits().total() != null
                         ? response.hits().total().value()
                         : 0;
 
 
-        // 전체 페이지 수
+        // ==========================================
+        // 6. 전체 페이지 수
+        // ==========================================
+
         long totalPages =
                 (totalCount + safeSize - 1)
                         / safeSize;
 
 
-        // 검색 결과
+        // ==========================================
+        // 7. 검색 결과
+        // ==========================================
+
         List<ProductDocument> products =
                 new ArrayList<>();
 
@@ -136,10 +277,17 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         }
 
 
-        // 다음 페이지 존재 여부
+        // ==========================================
+        // 8. 다음 페이지 존재 여부
+        // ==========================================
+
         boolean hasNext =
                 safePage < totalPages - 1;
 
+
+        // ==========================================
+        // 9. 응답
+        // ==========================================
 
         return new ProductSearchResponse(
                 products,
@@ -152,12 +300,17 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
 
+    // ==========================================
     // Oracle → Elasticsearch 초기 적재
+    // ==========================================
+
     @Override
     public void initialize() {
 
         Long lastId = 0L;
+
         int batchSize = 10000;
+
 
         while (true) {
 
@@ -167,11 +320,13 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 //                            lastId,
 //                            batchSize
 //                    );
+
             List<ProductEntity> products =
                     productRepository.findProductsForIndex(
                             lastId,
                             batchSize
                     );
+
 
             // 더 이상 데이터가 없으면 종료
             if (products.isEmpty()) {
@@ -189,7 +344,8 @@ public class ProductSearchServiceImpl implements ProductSearchService {
                                             product.getPrice(),
                                             product.getStock(),
                                             product.getProductCode(),
-                                            product.getVersion()
+                                            product.getVersion(),
+                                            product.getDeleted()
                                     )
                             )
                             .toList();
@@ -207,7 +363,8 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 
 
             System.out.println(
-                    "ES 초기 적재 완료 : lastId = " + lastId
+                    "ES 초기 적재 완료 : lastId = "
+                            + lastId
             );
         }
     }
