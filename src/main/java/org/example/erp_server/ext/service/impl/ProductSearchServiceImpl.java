@@ -172,68 +172,70 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             System.out.println();
 
 
-        } catch (Exception e) {
+        } catch (co.elastic.clients.elasticsearch._types.ElasticsearchException e) {
 
-            // ==========================================
-            // Elasticsearch 에러 상세 출력
-            // ==========================================
-
-            System.out.println();
             System.out.println();
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println("         ELASTICSEARCH ERROR");
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-
             System.out.println();
             System.out.println("[REQUEST INFO]");
-
             System.out.println("page      = " + page);
             System.out.println("safePage  = " + safePage);
             System.out.println("size      = " + size);
             System.out.println("safeSize  = " + safeSize);
             System.out.println("from      = " + from);
 
-
             System.out.println();
             System.out.println("[SEARCH CONDITION]");
-
-            System.out.println("field     = "
-                    + condition.getField());
-
-            System.out.println("keyword   = "
-                    + condition.getKeyword());
-
+            System.out.println("field     = " + condition.getField());
+            System.out.println("keyword   = " + condition.getKeyword());
 
             System.out.println();
             System.out.println("[ELASTICSEARCH QUERY]");
-
             System.out.println(query);
-
 
             System.out.println();
             System.out.println("[EXCEPTION CLASS]");
-
-            System.out.println(
-                    e.getClass().getName()
-            );
-
+            System.out.println(e.getClass().getName());
 
             System.out.println();
             System.out.println("[EXCEPTION MESSAGE]");
+            System.out.println(e.getMessage());
 
-            System.out.println(
-                    e.getMessage()
-            );
+            // Throwable 체인 전부 출력
+            System.out.println();
+            System.out.println("[CAUSE CHAIN]");
 
+            Throwable cause = e;
+
+            int depth = 0;
+
+            while (cause != null) {
+
+                System.out.println(
+                        "CAUSE[" + depth + "] "
+                                + cause.getClass().getName()
+                );
+
+                System.out.println(
+                        "MESSAGE[" + depth + "] "
+                                + cause.getMessage()
+                );
+
+                cause = cause.getCause();
+                depth++;
+            }
 
             System.out.println();
             System.out.println("[STACK TRACE]");
-
             e.printStackTrace();
 
+            System.out.println();
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println();
 
-            // 원래 예외 다시 전달
             throw e;
         }
 
