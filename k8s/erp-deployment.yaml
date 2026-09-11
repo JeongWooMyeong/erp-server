@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erp-server-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: erp-server
+
+  template:
+    metadata:
+      labels:
+        app: erp-server
+
+    spec:
+      containers:
+        - name: erp-server
+          image: jeongwoomyeong/erp-server:latest
+
+          ports:
+            - containerPort: 8088
+
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+
+            limits:
+              cpu: "1"
+              memory: "1Gi"
