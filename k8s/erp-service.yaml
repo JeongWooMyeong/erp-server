@@ -11,5 +11,4 @@ spec:
     - protocol: TCP
       port: 8088
       targetPort: 8088
-      nodePort: 30082 #브라우저 접속 포트 (http://localhost:30082)
   type: ClusterIP
