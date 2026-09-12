@@ -8,11 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ErpServerApplication {
 
     public static void main(String[] args) throws Exception{
-        String ip = NetWorkUtil.getWifiIp();
-
-        System.out.println("현재 서버 IP : " + ip);
-
-        System.setProperty("server-host", ip);
+//        String ip = NetWorkUtil.getWifiIp();
+//
+//        System.out.println("현재 서버 IP : " + ip);
+//
+//        System.setProperty("server-host", ip);
 
         SpringApplication.run(ErpServerApplication.class, args);
     }
