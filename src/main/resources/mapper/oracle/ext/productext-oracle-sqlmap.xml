@@ -45,7 +45,7 @@
                VERSION,
                DELETED
         FROM PRODUCT
-        WHERE PRODUCT_ID = #{productId}
+        WHERE PRODUCT_CODE = #{productId}
           AND DELETED = 'N'
 
     </select>
@@ -62,7 +62,7 @@
                VERSION,
                DELETED
         FROM PRODUCT
-        WHERE PRODUCT_ID = #{productId}
+        WHERE PRODUCT_CODE = #{productId}
 
     </select>
 
@@ -131,7 +131,7 @@
             PRICE = #{price},
             STOCK = #{stock},
             VERSION = VERSION + 1
-        WHERE PRODUCT_ID = #{productId}
+        WHERE PRODUCT_CODE = #{productId}
         AND VERSION = #{version}
         AND DELETED = 'N'
 
@@ -145,7 +145,7 @@
         UPDATE PRODUCT
         SET DELETED = 'Y',
             VERSION = VERSION + 1
-        WHERE PRODUCT_ID = #{productId}
+        WHERE PRODUCT_CODE = #{productId}
           AND VERSION = #{version}
           AND DELETED = 'N'
 
