@@ -131,7 +131,7 @@
             PRICE = #{price},
             STOCK = #{stock},
             VERSION = VERSION + 1
-        WHERE PRODUCT_CODE = #{productId}
+        WHERE PRODUCT_CODE = #{productCode}
         AND VERSION = #{version}
         AND DELETED = 'N'
 
