@@ -1,9 +1,9 @@
-package org.example.erp.search.repository;
+package org.example.erp.search.product.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.example.erp.search.dto.ErpProductSearchDto;
+import org.example.erp.search.product.dto.ErpProductSearchDto;
 import org.example.erp.search.entity.QErpCategory;
 import org.example.erp.search.entity.QErpProductMaster;
 import org.example.erp.search.entity.QErpStore;

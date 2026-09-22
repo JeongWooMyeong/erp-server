@@ -1,4 +1,4 @@
-package org.example.erp.search.document;
+package org.example.erp.search.product.document;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

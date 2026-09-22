@@ -1,10 +1,10 @@
-package org.example.erp.search.service;
+package org.example.erp.search.event.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.erp.search.document.ErpEventProductDocument;
-import org.example.erp.search.dto.ErpEventProductSearchDto;
-import org.example.erp.search.repository.ErpEventProductDocumentRepository;
-import org.example.erp.search.repository.ErpEventProductSearchRepository;
+import org.example.erp.search.event.document.ErpEventProductDocument;
+import org.example.erp.search.event.dto.ErpEventProductSearchDto;
+import org.example.erp.search.event.repository.ErpEventProductDocumentRepository;
+import org.example.erp.search.event.repository.ErpEventProductSearchRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

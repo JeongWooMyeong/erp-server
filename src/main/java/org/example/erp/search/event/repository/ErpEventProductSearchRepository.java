@@ -1,6 +1,6 @@
-package org.example.erp.search.repository;
+package org.example.erp.search.event.repository;
 
-import org.example.erp.search.dto.ErpEventProductSearchDto;
+import org.example.erp.search.event.dto.ErpEventProductSearchDto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.example.erp.search.dto;
+package org.example.erp.search.product.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
-package org.example.erp.search.controller;
+package org.example.erp.search.event.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.erp.search.dto.ErpEventProductSearchDto;
-import org.example.erp.search.service.ErpEventProductSearchService;
+import org.example.erp.search.event.dto.ErpEventProductSearchDto;
+import org.example.erp.search.event.service.ErpEventProductSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

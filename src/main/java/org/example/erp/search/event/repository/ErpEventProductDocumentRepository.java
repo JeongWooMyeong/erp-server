@@ -1,6 +1,6 @@
-package org.example.erp.search.repository;
+package org.example.erp.search.event.repository;
 
-import org.example.erp.search.document.ErpEventProductDocument;
+import org.example.erp.search.event.document.ErpEventProductDocument;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface ErpEventProductDocumentRepository

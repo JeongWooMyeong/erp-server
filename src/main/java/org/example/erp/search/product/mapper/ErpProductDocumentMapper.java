@@ -1,7 +1,7 @@
-package org.example.erp.search.mapper;
+package org.example.erp.search.product.mapper;
 
-import org.example.erp.search.document.ErpProductDocument;
-import org.example.erp.search.dto.ErpProductSearchDto;
+import org.example.erp.search.product.document.ErpProductDocument;
+import org.example.erp.search.product.dto.ErpProductSearchDto;
 import org.springframework.stereotype.Component;
 
 @Component

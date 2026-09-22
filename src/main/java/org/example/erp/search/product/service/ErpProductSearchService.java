@@ -1,11 +1,11 @@
-package org.example.erp.search.service;
+package org.example.erp.search.product.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.erp.search.document.ErpProductDocument;
-import org.example.erp.search.dto.ErpProductSearchDto;
-import org.example.erp.search.mapper.ErpProductDocumentMapper;
-import org.example.erp.search.repository.ErpProductDocumentRepository;
-import org.example.erp.search.repository.ErpProductSearchRepository;
+import org.example.erp.search.product.document.ErpProductDocument;
+import org.example.erp.search.product.dto.ErpProductSearchDto;
+import org.example.erp.search.product.mapper.ErpProductDocumentMapper;
+import org.example.erp.search.product.repository.ErpProductDocumentRepository;
+import org.example.erp.search.product.repository.ErpProductSearchRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

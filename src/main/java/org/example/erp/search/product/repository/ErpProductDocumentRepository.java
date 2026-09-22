@@ -1,6 +1,6 @@
-package org.example.erp.search.repository;
+package org.example.erp.search.product.repository;
 
-import org.example.erp.search.document.ErpProductDocument;
+import org.example.erp.search.product.document.ErpProductDocument;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface ErpProductDocumentRepository
