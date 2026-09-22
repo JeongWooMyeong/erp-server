@@ -3,8 +3,23 @@ package org.example.erp_server;
 import org.example.erp_server.util.NetWorkUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "org.example.erp_server",
+        "org.example.erp"
+})
+@EntityScan(basePackages = {
+        "org.example.erp_server",
+        "org.example.erp"
+})
+@EnableElasticsearchRepositories(
+        basePackages = {
+                "org.example.erp_server.ext.service.repository",
+                "org.example.erp.search.repository"
+        }
+)
 public class ErpServerApplication {
 
     public static void main(String[] args) throws Exception{
