@@ -16,8 +16,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 })
 @EnableElasticsearchRepositories(
         basePackages = {
-                "org.example.erp_server.ext.service.repository",
-                "org.example.erp.search.repository"
+                "org.example.erp_server",
+                "org.example.erp.search"
         }
 )
 public class ErpServerApplication {

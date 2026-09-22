@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,10 +36,10 @@ public class ErpEventProductDocument {
     private String eventName;
 
     @Field(type = FieldType.Date)
-    private LocalDateTime startDate;
+    private LocalDate  startDate;
 
     @Field(type = FieldType.Date)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Field(type = FieldType.Keyword)
     private String activeYn;
